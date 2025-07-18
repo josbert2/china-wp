@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  wordpress:
+    image: wordpress:latest
+    container_name: china_wp_wordpress
+    restart: unless-stopped
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: china_wp_db
+      WORDPRESS_DB_USER: china_user
+      WORDPRESS_DB_PASSWORD: china_pass
+    ports:
+      - "0:80" # puerto aleatorio asignado por el sistema
+    volumes:
+      - china_wp_data:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - china_wp_net
+
+  db:
+    image: mysql:5.7
+    container_name: china_wp_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: china_wp_db
+      MYSQL_USER: china_user
+      MYSQL_PASSWORD: china_pass
+      MYSQL_ROOT_PASSWORD: root_china
+    volumes:
+      - china_wp_db_data:/var/lib/mysql
+    networks:
+      - china_wp_net
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: china_wp_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_USER: china_user
+      PMA_PASSWORD: china_pass
+    ports:
+      - "0:80" # puerto aleatorio asignado por el sistema
+    depends_on:
+      - db
+    networks:
+      - china_wp_net
+
+volumes:
+  china_wp_data:
+  china_wp_db_data:
+
+networks:
+  china_wp_net:
