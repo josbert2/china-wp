@@ -1,0 +1,5 @@
+china_wp_data/
+china_wp_db_data/
+*.log
+.env
+
