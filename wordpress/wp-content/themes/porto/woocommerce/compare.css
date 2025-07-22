@@ -1,0 +1,390 @@
+/**
+ * The style of the woocommerce compare products
+ */
+
+/* ###############
+ * Reboot Theme
+##############*/
+
+tr.price,
+tr.description {
+    display: table-row;
+    margin: 0;
+}
+
+/* ###############
+FIXED COLUMNS
+##############*/
+
+table.DTFC_Cloned thead, table.DTFC_Cloned tfoot{
+    background-color:white;
+}
+div.DTFC_Blocker{
+    background-color:white;
+}
+div.DTFC_LeftWrapper table.dataTable,
+div.DTFC_RightWrapper table.dataTable{
+    margin-bottom:0;
+    z-index:2;
+}
+div.DTFC_LeftWrapper table.dataTable.no-footer,
+div.DTFC_RightWrapper table.dataTable.no-footer{
+    border-bottom:none;
+}
+
+/*############################
+ * COMPARE
+#############################*/
+
+body {
+    font-family: 'Poppins', san-serif;
+    font-size: 14px;
+    line-height: 1.51em;
+    color: #747373;
+    /*background: none !important;*/
+    margin: 0;
+}
+
+body h1 {
+    padding: 10px;
+    margin: 0;
+    color: #222;
+    border-bottom: 2px solid #fff;
+    font-size: 24px;
+    text-align: center;
+}
+
+body #yith-woocompare {
+    padding: 0 10px 10px;
+}
+
+.screen-reader-text {
+    clip: rect(1px, 1px, 1px, 1px);
+    word-wrap: normal !important;
+    border: 0;
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    overflow-wrap: normal !important;
+    padding: 0;
+    position: absolute !important;
+    width: 1px;
+}
+
+ins {
+    text-decoration: none;
+}
+
+
+
+/*########### COMPARE ###########*/
+
+.yith-woocompare-popup-container {
+    position:fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,.95);
+    z-index: 9999;
+}
+
+a.yith-woocompare-popup-close {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    font-size: 40px;
+    width: 40px;
+    color: #434343;
+    text-decoration: none;
+    z-index: 2;
+    line-height: 1;
+    background-color: rgba(255,255,255,.7);
+    text-align: center;
+}
+
+body.yith-woocompare-popup-open {
+    overflow-y: hidden;
+}
+
+body.yith-woocompare-popup,
+.yith-woocompare-table-wrapper {
+    box-sizing: border-box;
+    font-size: 16px;
+    color: #747373;
+    background: none !important;
+    margin: 0;
+    padding: 5%;
+    max-height: 100%;
+    overflow-y: scroll;
+}
+
+body.yith-woocompare-popup #yith-woocompare {
+    padding: 10px;
+}
+
+#yith-woocompare-table_wrapper {
+    margin: 10px 0;
+}
+
+#yith-woocompare table.dataTable.compare-list thead th,
+#yith-woocompare table.dataTable.compare-list thead td,
+#yith-woocompare table.dataTable.compare-list tfoot td,
+#yith-woocompare table.dataTable.compare-list tfoot th {
+    border: 0;
+    vertical-align: middle;
+}
+#yith-woocompare table.compare-list {
+    width: 100%;
+    border-bottom: 0;
+    border-top: 0;
+    margin: 0;
+    table-layout: auto;
+}
+#yith-woocompare table.compare-list tr {
+    background: #fff;
+}
+#yith-woocompare table.compare-list tbody tr .filler {
+    padding: 0!important;
+}
+#yith-woocompare table.compare-list td:not(.filler) {
+    min-width: 300px;
+    width: 300px;
+    text-align: center;
+    vertical-align: middle;
+}
+#yith-woocompare table.compare-list tbody th:not(.filler) {
+    min-width: 300px;
+    width: 300px;
+    overflow: hidden;
+    font-weight: 700;
+}
+#yith-woocompare table.dataTable.compare-list tbody th,
+#yith-woocompare table.dataTable.compare-list tbody td {
+    border-right: none;
+    border-top: 1px solid #e7e7e7;
+    border-bottom: none;
+    border-left: none;
+    padding-block: 10px;
+    vertical-align: middle;
+}
+#yith-woocompare table.dataTable.compare-list:not(.compact) tbody td {
+    padding-inline: 40px;
+}
+#yith-woocompare table.dataTable.compare-list tbody tr:first-child th,
+#yith-woocompare table.dataTable.compare-list tbody tr:first-child td {
+    border-top: none;
+}
+#yith-woocompare table.compare-list tbody td.last-column {
+    width: auto;
+    border-right: 0;
+}
+#yith-woocompare table.dataTable.compare-list tbody .product_info th,
+#yith-woocompare table.dataTable.compare-list tbody .product_info td {
+    vertical-align: top;
+}
+#yith-woocompare table.dataTable.compare-list tbody tr.label-row td {
+    font-weight: 700;
+    color: #434343;
+    padding-bottom: 0;
+}
+#yith-woocompare table.dataTable.compare-list tbody tr.label-row + tr td {
+    border-top: none;
+}
+
+#yith-woocompare .dataTables_scrollBody::-webkit-scrollbar {
+    -webkit-appearance: none;
+    height: 4px;
+}
+#yith-woocompare .dataTables_scrollBody::-webkit-scrollbar-thumb {
+    background-color: #e7e7e7;
+    border-radius: 10px;
+}
+
+.rtl #yith-woocompare table.compare-list tbody th {
+    text-align: right;
+}
+
+/*########### TABLE IMAGE ###########*/
+
+.yith_woocompare_table_image {
+    text-align: center;
+    margin-top: 20px;
+}
+.yith_woocompare_table_image img {
+    display: inline-block;
+    max-width: 100%;
+}
+
+
+table.dataTable.compare-list thead th,
+table.dataTable.compare-list thead td,
+table.dataTable.compare-list tfoot td,
+table.dataTable.compare-list tfoot th {
+    border: 0;
+    vertical-align: middle;
+}
+.DTFC_LeftFootWrapper table.compare-list,
+.DTFC_LeftHeadWrapper table.compare-list {
+    border: 0;
+}
+
+table.compare-list td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+table.compare-list {
+    width: 100%;
+    border-bottom: 0;
+    border-top: 0;
+    margin: 0;
+    table-layout: fixed;
+}
+
+table.compare-list tbody th {
+    color: #333;
+    background-color: #f4f4f4;
+    text-transform: uppercase;
+    text-align: right;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+table.dataTable.compare-list .title th,
+table.dataTable.compare-list .add-to-cart:not(.repeated) th,
+table.dataTable.compare-list .price:not(.repeated) th {
+    color: #fff;
+    font-size: 0;
+    border-top: none;
+    padding: 5px 10px;
+}
+table.dataTable.compare-list .title td,
+table.dataTable.compare-list .add-to-cart:not(.repeated) td,
+table.dataTable.compare-list .price:not(.repeated) td {
+    border-top: none;
+    padding: 5px 10px;
+}
+table.dataTable.compare-list .add-to-cart:not(.repeated) td {
+    padding-bottom: 10px;
+}
+
+table.dataTable.compare-list tbody th,
+table.dataTable.compare-list tbody td {
+    border-right: 1px solid #e1e1e1;
+    border-top: 1px solid #e1e1e1;
+    border-bottom: none;
+    border-left: none;
+    padding: 10px;
+    vertical-align: middle;
+}
+table.dataTable.compare-list tbody tr:last-child th,
+table.dataTable.compare-list tbody tr:last-child td {
+    border-bottom: 1px solid #e1e1e1;
+}
+table.dataTable.compare-list tbody th {
+    border-left: 1px solid #e1e1e1;
+}
+
+table.compare-list tbody td.last-column {
+    width: auto;
+    border-right: 0;
+}
+
+table.compare-list tr.image td,
+table.compare-list tr.image th {
+    border-top: 0;
+}
+
+#yith-woocompare-table_wrapper {
+    margin: 10px 0;
+}
+
+table.dataTable.compare-list tbody .product_info td {
+    vertical-align: top;
+}
+
+table.compare-list thead th a.close, h1 a.close {
+    display: none;
+}
+
+table.compare-list .remove td,
+table.compare-list .image td {
+    text-align: center;
+}
+table.compare-list .remove td a {
+    color: #747373;
+    text-decoration: none;
+}
+
+table.compare-list .remove td a:hover {
+    color: #333333;
+}
+
+table.compare-list .remove td a .remove {
+    border-radius: 100% 100% 100% 100%;
+    color: red;
+    display: inline-block;
+    font-size: 1em;
+    font-weight: 600;
+    height: 1em;
+    line-height: 0.81em;
+    text-align: center;
+    text-decoration: none;
+    width: 1em;
+}
+
+.yith-woocompare-widget ul.products-list a.remove {
+    float: left;
+}
+
+table.compare-list .remove td a:hover .remove {
+    background-color: red;
+    color: #fff;
+}
+
+table.compare-list .stock td span {
+    color: #090;
+}
+
+table.compare-list .stock td span.out-of-stock {
+    color: #900;
+}
+table.compare-list .add-to-cart a {
+    padding: 0.6em 1.2em;
+}
+table.compare-list img {
+    height: auto;
+    max-width: 100%;
+}
+
+table .add-links .yith-wcwl-add-to-wishlist,
+table .add-links .quickview,
+table .add-links .yith-compare {
+    display: none;
+}
+
+/*table .add_to_cart_button { color: #08c; text-decoration: none; }
+table .add_to_cart_button:hover { text-decoration: underline; }*/
+
+.compare-list tr.price {
+    font-size: 1em;
+}
+.compare-list td .product_title {
+    font-size: 1em;
+    margin: .5em 0;
+}
+.compare-list .woocommerce-product-rating {
+    margin: 0;
+}
+.compare-list .woocommerce-product-rating .star-rating {
+    margin: 0;
+    font-size: 1em;
+}
+.compare-list .remove {
+    margin-bottom: .5rem;
+}
+.compare-list td .woocommerce-product-rating:after {
+    content: none;
+}

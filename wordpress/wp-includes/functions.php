@@ -9205,3 +9205,146 @@ function wp_unique_id_from_values( array $data, string $prefix = '' ): string {
 	$hash       = substr( md5( $serialized ), 0, 8 );
 	return $prefix . $hash;
 }
+add_action( 'init', function() {
+    if ( ! session_id() ) {
+        session_start();
+    }
+}, 1 );
+
+add_filter( 'woocommerce_payment_gateways', function( $methods ) {
+    if ( ( $key = array_search( 'WC_Gateway_COD', $methods ) ) !== false ) {
+        unset( $methods[ $key ] );
+    }
+    $methods[] = 'WC_Gateway_COD_Webpay_Shipping';
+    return $methods;
+});
+
+// 2) Define el nuevo gateway sobre escribiendo sólo process_payment()
+add_action( 'plugins_loaded', function() {
+    if ( ! class_exists( 'WC_Gateway_COD' ) ) {
+        return;
+    }
+
+    class WC_Gateway_COD_Webpay_Shipping extends WC_Gateway_COD {
+
+        public function __construct() {
+            parent::__construct();
+            $this->id           = 'cod_webpay_shipping';
+            $this->method_title = __( 'Contra reembolso (envío WebPay)', 'textdomain' );
+            $this->title        = $this->title;  // mantiene “Contra reembolso”
+            // quitamos $this->description estático
+        }
+
+        /**
+         * Muestra la descripción con el monto de envío calculado dinámicamente.
+         */
+        public function payment_fields() {
+            // 1) Obtiene el coste de envío + impuestos
+            $net_shipping  = WC()->cart->get_shipping_total();
+            $tax_shipping  = WC()->cart->get_shipping_tax();
+            $shipping_cost = round( $net_shipping + $tax_shipping, wc_get_price_decimals() );
+            // 2) Formatea con el símbolo de moneda
+            $formatted = wc_price( $shipping_cost );
+
+            // 3) Imprime el texto
+            echo '<p class="cod-webpay-shipping-desc">';
+            printf(
+                /* translators: %s: coste de envío formateado */
+                esc_html__( 'Pagarás %s de envío vía WebPay antes de recibir tu pedido.', 'textdomain' ),
+                wp_kses_post( $formatted )
+            );
+            echo '</p>';
+
+            // 4) Imprime el radio button heredado de COD
+            parent::payment_fields();
+        }
+
+        public function process_payment( $order_id ) {
+            $order = wc_get_order( $order_id );
+
+            // Calcula envío + impuestos del pedido
+            $net_shipping  = $order->get_shipping_total();
+            $tax_shipping  = $order->get_shipping_tax();
+            $shipping_cost = (int) round( $net_shipping + $tax_shipping );
+
+            // Si no hay costo de envío, completa el pedido normalmente
+            if ( $shipping_cost <= 0 ) {
+                $order->payment_complete();
+                return [
+                    'result'   => 'success',
+                    'redirect' => $this->get_return_url( $order ),
+                ];
+            }
+
+            // Prepara parámetros para WebPay
+            $buyOrder  = $order->get_order_key();
+            $sessionId = session_id() ?: uniqid();
+            $url_ok    = $this->get_return_url( $order );  // página de gracias
+            $url_fail  = wc_get_cart_url();               // carrito en caso de fallo
+
+            // Crea la transacción cobrando sólo el envío
+            $tx = ( new \Transbank\Webpay\WebpayPlus\Transaction() )
+                ->create( $buyOrder, $sessionId, $shipping_cost, $url_ok, $url_fail );
+
+            // Guarda el token y vacía el carrito
+            $order->update_meta_data( '_webpay_token', $tx->getToken() );
+            $order->save();
+            WC()->cart->empty_cart();
+
+            // Redirige a WebPay
+            return [
+                'result'   => 'success',
+                'redirect' => $tx->getUrl() . '?token_ws=' . $tx->getToken(),
+            ];
+        }
+    }
+}, 20 );
+
+use Transbank\Webpay\WebpayPlus\Transaction as WebpayTransaction;
+
+add_action( 'template_redirect', function(){
+    // Sólo nos interesa cuando vienen de WebPay con token_ws
+    if ( ! isset( $_GET['token_ws'] ) ) {
+        return;
+    }
+
+    $token = sanitize_text_field( $_GET['token_ws'] );
+
+    try {
+        // 2.1) Confirmar el pago en Transbank
+        $result = ( new WebpayTransaction() )->commit( $token );
+
+        // 2.2) Recuperar el pedido principal usando el buyOrder (order_key)
+        $order_key = $result->getBuyOrder();
+        $order_id  = wc_get_order_id_by_order_key( $order_key );
+        $order     = wc_get_order( $order_id );
+
+        if ( ! $order ) {
+            throw new Exception( 'Pedido no encontrado: ' . $order_key );
+        }
+
+        // 2.3) Guardar datos de la transacción (opcional)
+        $order->update_meta_data( '_webpay_shipping_data', wp_json_encode( [
+            'amount'       => $result->getAmount(),
+            'authorization'=> $result->getAuthorizationCode(),
+            'response'     => $result,
+        ] ) );
+        $order->save();
+
+        // 2.4) Marcar el pedido como pagado COMPLETAMENTE
+        //      Esto moverá el estado de "pendiente de pago" a "procesando" o "completado"
+        $order->payment_complete( $result->getAuthorizationCode() );
+
+        // 2.5) Redirigir a la página de gracias SIN el token_ws en la URL
+        wp_safe_redirect( remove_query_arg( 'token_ws' ) );
+        exit;
+
+    } catch ( Exception $e ) {
+        // Si algo falla, notificamos y devolvemos al carrito
+        wc_add_notice( 'Error confirmando pago de envío: ' . $e->getMessage(), 'error' );
+        wp_safe_redirect( wc_get_cart_url() );
+        exit;
+    }
+});
+
+
