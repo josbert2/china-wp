@@ -3,7 +3,8 @@ version: '3.8'
 services:
   wordpress:
     build:
-      context: ./wordpress
+      context: .           # apunta a la raíz donde está Dockerfile y msmtp.conf
+      dockerfile: Dockerfile
     container_name: china_wp_wordpress
     restart: unless-stopped
     environment:
@@ -12,7 +13,7 @@ services:
       WORDPRESS_DB_USER: china_user
       WORDPRESS_DB_PASSWORD: china_pass
     ports:
-      - "8280:80"      # WP en localhost:8280
+      - "8280:80"          # WordPress en localhost:8280
     volumes:
       - ./wordpress:/var/www/html
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -45,7 +46,7 @@ services:
       PMA_USER: china_user
       PMA_PASSWORD: china_pass
     ports:
-      - "8081:80"    # phpMyAdmin en localhost:8081
+      - "8081:80"          # phpMyAdmin en localhost:8081
     depends_on:
       - db
     networks:
@@ -53,11 +54,11 @@ services:
 
   mailhog:
     image: mailhog/mailhog
-    container_name: mailhog
+    container_name: china_wp_mailhog
     restart: unless-stopped
     ports:
-      - "3025:1025"  # SMTP expuesto en localhost:3025
-      - "18025:8025" # UI web en localhost:18025
+      - "3025:1025"        # SMTP expuesto en localhost:3025
+      - "18025:8025"       # UI web en localhost:18025
     networks:
       - china_wp_net
 

@@ -1,6 +1,6 @@
-# BEGIN WordPress
-# Las directivas (líneas) entre "BEGIN WordPress" y "END WordPress" son
-# generados dinámicamente, y sólo deben ser modificados a través de los filtros de WordPress.
-# Cualquier cambio en las directivas entre estos marcadores se sobrescribirá.
-
-# END WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
