@@ -30,7 +30,7 @@
 	<!-- wp:group {"style":{"spacing":{"blockGap":"16px"}},"layout":{"type":"constrained"}} -->
 	<div class="wp-block-group">
 		<!-- wp:heading {"style":{"typography":{"fontSize":"1.6rem"}}} -->
-		<h2 class="wp-block-heading" style="font-size:1.6rem"><?php esc_html_e( 'Popular Categories', 'twentytwentyfour' ); ?></h2>
+		<h2 class="wp-block-heading" style="font-size:1.6rem"><?php esc_html_e( 'Categorías populares', 'twentytwentyfour' ); ?></h2>
 		<!-- /wp:heading -->
 
 		<!-- wp:categories {"showHierarchy":true,"showPostCounts":true,"fontSize":"small"} /-->
